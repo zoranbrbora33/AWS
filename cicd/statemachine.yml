@@ -1,0 +1,150 @@
+AWSTemplateFormatVersion: '2010-09-09'
+
+Parameters:
+  StateMachineName:
+    Type: String
+  StateMachineRoleName:
+    Type: String
+  StateMachineTriggerRoleName:
+    Type: String
+  DataS3BucketName:
+    Type: String
+  ScriptsS3BucketName:
+    Type: String
+  DynamoDBTableGlobalName:
+    Type: String
+  DynamoDBTableJobsName:
+    Type: String
+  LambdaLandingName:
+    Type: String
+  LambdaLandingRoleName:
+    Type: String
+  
+Resources:
+  ZbrboraLambdaLandingRoleName:
+    Type: "AWS::IAM::Role"
+    Properties:
+      RoleName: !Ref LambdaLandingRoleName
+      AssumeRolePolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service: lambda.amazonaws.com
+            Action: sts:AssumeRole
+      Policies:
+        - PolicyName: LambdaPolicy
+          PolicyDocument:
+            Version: "2012-10-17"
+            Statement:
+              - Effect: Allow
+                Action:
+                  - logs:PutLogEvents
+                  - events:PutRule
+                  - events:DescribeRule
+                  - logs:CreateLogGroup
+                  - logs:CreateLogStream
+                  - dynamodb:PutItem
+                  - dynamodb:UpdateItem
+                  - dynamodb:GetItem
+                  - dynamodb:Scan
+                  - s3:GetObject
+                  - s3:PutObject
+                Resource: "*"
+
+  ZbrboraLambdaLandingName:
+    Type: 'AWS::Lambda::Function'
+    Properties:
+      FunctionName: !Ref LambdaLandingName
+      Runtime: python3.10
+      Role: !GetAtt ZbrboraLambdaLandingRoleName.Arn
+      Handler: lambda_landing.handler
+      Layers:
+        - arn:aws:lambda:eu-central-1:336392948345:layer:AWSSDKPandas-Python310:3
+      MemorySize: 1024
+      Timeout: 900
+      Environment:
+        Variables:
+          S3BUCKET_DATA: !Ref DataS3BucketName
+          GLOBAL_TABLE: !Ref DynamoDBTableGlobalName
+          JOBS_TABLE: !Ref DynamoDBTableJobsName
+      Code:
+        S3Bucket: !Ref ScriptsS3BucketName
+        S3Key: "lambdas/lambda_landing.zip"
+        
+
+
+  ZbrboraStateMachineRoleName:
+    Type: AWS::IAM::Role
+    Properties:
+      RoleName: !Ref StateMachineRoleName
+      AssumeRolePolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+          - Effect: Allow
+            Action:
+              - sts:AssumeRole
+            Principal:
+              Service: states.amazonaws.com
+      Policies:
+        - PolicyName: CloudWatch
+          PolicyDocument:
+            Version: '2012-10-17'
+            Statement:
+              - Effect: Allow
+                Action:
+                  - logs:*
+                Resource: '*'
+        - PolicyName: LambdaInvoke
+          PolicyDocument:
+            Version: '2012-10-17'
+            Statement:
+              - Effect: Allow
+                Action:
+                  - lambda:InvokeFunction
+                Resource: "*"
+        - PolicyName: DynamoDBScan
+          PolicyDocument:
+            Version: '2012-10-17'
+            Statement:
+              - Effect: Allow
+                Action:
+                  - dynamodb:Scan
+                Resource: "*"
+
+  ZbrboraStateMachine:
+    Type: AWS::StepFunctions::StateMachine
+    Properties:
+      StateMachineName: !Ref StateMachineName
+      RoleArn: !GetAtt ZbrboraStateMachineRoleName.Arn
+      DefinitionString: |-
+          {
+            "Comment": "DynamoDB Scan",
+            "StartAt": "Scan",
+            "States": {
+              "Scan": {
+                "Type": "Task",
+                "Resource": "arn:aws:states:::aws-sdk:dynamodb:scan",
+                "Parameters": {
+                  "TableName": "zbrbora-academy-cicd-jobs"
+                },
+                "Next": "ProcessAllItems"
+              },
+              "ProcessAllItems": {
+                "Type": "Map",
+                "ItemsPath": "$.Items",
+                "ResultPath": "$.mappedResults",
+                "Iterator": {
+                  "StartAt": "ProcessItem",
+                  "States": {
+                    "ProcessItem": {
+                      "Type": "Task",
+                      "Resource": "arn:aws:lambda:eu-central-1:456582705970:function:zbrbora-academy-lambda-landing-cicd",
+                      "End": true
+                    }
+                  }
+                },
+                "End": true
+              }
+            }
+          }

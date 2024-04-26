@@ -1,0 +1,57 @@
+AWSTemplateFormatVersion: "2010-09-09"
+
+Parameters:
+  LambdaFunctionName:
+    Type: String
+  ScriptsS3BucketName:
+    Type: String
+
+Resources:
+  ZbrboraAcademyScheduledEvent:
+    Type: 'AWS::Events::Rule'
+    Properties:
+      ScheduleExpression: cron(0 9 ? * MON *)  
+      State: ENABLED
+      Targets:
+        - Arn: !GetAtt ZbrboraAcademyLambdaFunction.Arn
+          Id: TargetFunctionV1
+
+
+  ZbrboraLambdaExecutionRole:
+    Type: "AWS::IAM::Role"
+    Properties:
+      AssumeRolePolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service: lambda.amazonaws.com
+            Action: sts:AssumeRole
+      Policies:
+        - PolicyName: LambdaPolicy
+          PolicyDocument:
+            Version: "2012-10-17"
+            Statement:
+              - Effect: Allow
+                Action:
+                  - logs:CreateLogGroup
+                  - logs:CreateLogStream
+                  - logs:PutLogEvents
+                  - dynamodb:PutItem
+                  - s3:GetObject
+                  - events:PutRule
+                  - events:DescribeRule
+                Resource: "*"
+
+  ZbrboraAcademyLambdaFunction:
+    Type: 'AWS::Lambda::Function'
+    Properties:
+      FunctionName: !Ref LambdaFunctionName
+      Runtime: python3.10
+      Role: !GetAtt ZbrboraLambdaExecutionRole.Arn
+      Handler: set_attributes.handler
+      Code:
+        S3Bucket: !Ref ScriptsS3BucketName
+        S3Key: "lambdas/lambda_attributes.zip"
+        
+              

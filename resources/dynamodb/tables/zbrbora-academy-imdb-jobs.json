@@ -1,0 +1,15 @@
+{
+    "TableName": "zbrbora-academy-imdb-jobs",
+    "KeySchema": [
+        { "AttributeName": "table_name", "KeyType": "HASH" }
+    ],
+    "AttributeDefinitions": [
+        { "AttributeName": "table_name", "AttributeType": "S" },
+        { "AttributeName": "uri", "AttributeType": "S" },
+        { "AttributeName": "params", "AttributeType": "S" }
+    ],
+    "ProvisionedThroughput": {
+        "ReadCapacityUnits": 1,
+        "WriteCapacityUnits": 1
+    }
+}

@@ -1,0 +1,101 @@
+version: 0.2
+
+phases:
+  install:
+    commands:
+      - echo "Start Install"
+      - echo $(date)
+      - echo "current directory $(pwd)"
+      - ls -al
+      - echo "End Install"
+
+  pre_build:
+    commands:
+      # USER
+      - export OWNER_NAME="zbrbora-zoranbrbora1717@gmail.com"
+
+      # S3 STACK
+      - export S3_STACK_NAME="zbrbora-academy-stack-s3"
+      - export DATA_S3_BUCKET_NAME="zbrbora-academy-data"
+      - export SCRIPTS_S3_BUCKET_NAME="zbrbora-academy-scripts"
+
+      # DYNAMODB STACK
+      - export DYNAMODB_STACK_NAME="zbrbora-academy-dynamodb-stack"
+      - export DYNAMODB_TABLE_GLOBAL="zbrbora-academy-cicd-global"
+      - export DYNAMODB_TABLE_JOBS="zbrbora-academy-cicd-jobs"
+
+      # LAMBDA STACK
+      - export LAMBDA_STACK_NAME="zbrbora-academy-lambda-stack"
+      - export LAMBDA_FUNCTION_NAME_ATTRIBUTES="zbrbora-academy-lambda-attributes-cicd"
+
+      # STATEMACHINE STACK
+      - export STATE_MACHINE_STACK_NAME="zbrbora-academy-statemachine-stack"
+      - export STATE_MACHINE_NAME="zbrbora-academy-statemachine-cicd"
+      - export STATE_MACHINE_ROLE_NAME="zbrbora-academy-statemachine-role-cicd"
+      - export STATE_MACHINE_TRIGGER_ROLE_NAME="zbrbora-academy-statemachine-trigger-role-cicd"
+      - export LAMBDA_LANDING_NAME="zbrbora-academy-lambda-landing-cicd"
+      - export LAMBDA_LANDING_ROLE_NAME="lambda-landing-role-name-cicd"
+
+
+      - echo "===================== Zip Attribute Lambda and send to S3bucket ====================="
+      - zip -r - . -i resources/lambda/set_attributes.py | aws s3 cp - s3://zbrbora-academy-scripts/lambdas/lambda_attributes.zip
+      - echo "===================== Complete ====================="
+
+      - echo "===================== Zip Landing Lambda and send to S3bucket ====================="
+      - zip -r - . -i resources/lambda/lambda_landing.py | aws s3 cp - s3://zbrbora-academy-scripts/lambdas/lambda_landing.zip
+      - echo "===================== Complete ====================="
+
+      - echo $(date)
+      - echo "===================== S3 Start Deployment ====================="
+      - >
+        aws cloudformation deploy \
+          --template-file cicd/s3.yml \
+          --stack-name $S3_STACK_NAME \
+          --parameter-overrides \
+            DataS3BucketName=$DATA_S3_BUCKET_NAME \
+            ScriptsS3BucketName=$SCRIPTS_S3_BUCKET_NAME \
+          --tags Owner=$OWNER_NAME
+      - echo "===================== S3 Deployment Complete ====================="
+
+      - echo "===================== DynamoDB Deployment Start ====================="
+      - >
+        aws cloudformation deploy \
+          --template-file cicd/dynamodb.yml \
+          --stack-name $DYNAMODB_STACK_NAME \
+          --parameter-overrides \
+            DynamoDBTableGlobalName=$DYNAMODB_TABLE_GLOBAL \
+            DynamoDBTableJobsName=$DYNAMODB_TABLE_JOBS \
+          --tags Owner=$OWNER_NAME
+      - echo "===================== DynamoDB Deployment Complete ====================="
+
+      - echo "===================== Lambda Deployment Start ====================="
+      - >
+        aws cloudformation deploy \
+          --template-file cicd/lambda.yml \
+          --stack-name $LAMBDA_STACK_NAME \
+          --parameter-overrides \
+            LambdaFunctionName=$LAMBDA_FUNCTION_NAME_ATTRIBUTES \
+            ScriptsS3BucketName=$SCRIPTS_S3_BUCKET_NAME \
+          --capabilities CAPABILITY_NAMED_IAM \
+          --tags Owner=$OWNER_NAME
+      - echo "===================== Lambda Deployment Complete ====================="
+
+      - echo "===================== Statemachine Deployment Start ====================="
+      - >
+        aws cloudformation deploy \
+          --template-file cicd/statemachine.yml \
+          --stack-name $STATE_MACHINE_STACK_NAME \
+          --parameter-overrides \
+            StateMachineName=$STATE_MACHINE_NAME \
+            StateMachineRoleName=$STATE_MACHINE_ROLE_NAME \
+            StateMachineTriggerRoleName=$STATE_MACHINE_TRIGGER_ROLE_NAME \
+            DataS3BucketName=$DATA_S3_BUCKET_NAME \
+            ScriptsS3BucketName=$SCRIPTS_S3_BUCKET_NAME \
+            DynamoDBTableGlobalName=$DYNAMODB_TABLE_GLOBAL \
+            DynamoDBTableJobsName=$DYNAMODB_TABLE_JOBS \
+            LambdaLandingName=$LAMBDA_LANDING_NAME \
+            LambdaLandingRoleName=$LAMBDA_LANDING_ROLE_NAME \
+          --capabilities CAPABILITY_NAMED_IAM \
+          --tags Owner=$OWNER_NAME
+      - echo "===================== Statemachine Deployment Complete ====================="
+      - echo "End Build"

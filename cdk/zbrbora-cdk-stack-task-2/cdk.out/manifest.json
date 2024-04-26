@@ -1,0 +1,132 @@
+{
+  "version": "17.0.0",
+  "artifacts": {
+    "Tree": {
+      "type": "cdk:tree",
+      "properties": {
+        "file": "tree.json"
+      }
+    },
+    "zbrbora-cdk-stack-task-2.assets": {
+      "type": "cdk:asset-manifest",
+      "properties": {
+        "file": "zbrbora-cdk-stack-task-2.assets.json",
+        "requiresBootstrapStackVersion": 6,
+        "bootstrapStackVersionSsmParameter": "/cdk-bootstrap/hnb659fds/version"
+      }
+    },
+    "zbrbora-cdk-stack-task-2": {
+      "type": "aws:cloudformation:stack",
+      "environment": "aws://456582705970/eu-central-1",
+      "properties": {
+        "templateFile": "zbrbora-cdk-stack-task-2.template.json",
+        "validateOnSynth": false,
+        "assumeRoleArn": "arn:${AWS::Partition}:iam::456582705970:role/cdk-hnb659fds-deploy-role-456582705970-eu-central-1",
+        "cloudFormationExecutionRoleArn": "arn:${AWS::Partition}:iam::456582705970:role/cdk-hnb659fds-cfn-exec-role-456582705970-eu-central-1",
+        "stackTemplateAssetObjectUrl": "s3://cdk-hnb659fds-assets-456582705970-eu-central-1/b8631e2a5d5a8fc377ea18929ba4e4a8632e265d1a9c3b9ab02cacbd2423ce63.json",
+        "requiresBootstrapStackVersion": 6,
+        "bootstrapStackVersionSsmParameter": "/cdk-bootstrap/hnb659fds/version",
+        "additionalDependencies": [
+          "zbrbora-cdk-stack-task-2.assets"
+        ],
+        "lookupRole": {
+          "arn": "arn:${AWS::Partition}:iam::456582705970:role/cdk-hnb659fds-lookup-role-456582705970-eu-central-1",
+          "requiresBootstrapStackVersion": 8,
+          "bootstrapStackVersionSsmParameter": "/cdk-bootstrap/hnb659fds/version"
+        }
+      },
+      "dependencies": [
+        "zbrbora-cdk-stack-task-2.assets"
+      ],
+      "metadata": {
+        "/zbrbora-cdk-stack-task-2/zbrbora-academy-s3-cdk/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "zbrboraacademys3cdk14797522"
+          }
+        ],
+        "/zbrbora-cdk-stack-task-2/zbrbora-academy-s3-cdk/AllowBucketNotificationsTozbrboracdkstacktask2zbrboraacademylambdacdk7BF08D24": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "zbrboraacademys3cdkAllowBucketNotificationsTozbrboracdkstacktask2zbrboraacademylambdacdk7BF08D24858292C3"
+          }
+        ],
+        "/zbrbora-cdk-stack-task-2/zbrbora-academy-s3-cdk/Notifications/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "zbrboraacademys3cdkNotifications9FD047F4"
+          }
+        ],
+        "/zbrbora-cdk-stack-task-2/MyTable": [
+          {
+            "type": "aws:cdk:hasPhysicalName",
+            "data": {
+              "Ref": "MyTable794EDED1"
+            }
+          }
+        ],
+        "/zbrbora-cdk-stack-task-2/MyTable/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "MyTable794EDED1"
+          }
+        ],
+        "/zbrbora-cdk-stack-task-2/zbrbora-academy-lambda-cdk/ServiceRole/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "zbrboraacademylambdacdkServiceRole6E316A99"
+          }
+        ],
+        "/zbrbora-cdk-stack-task-2/zbrbora-academy-lambda-cdk/ServiceRole/DefaultPolicy/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "zbrboraacademylambdacdkServiceRoleDefaultPolicyFE6136DE"
+          }
+        ],
+        "/zbrbora-cdk-stack-task-2/zbrbora-academy-lambda-cdk/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "zbrboraacademylambdacdk544D9949"
+          }
+        ],
+        "/zbrbora-cdk-stack-task-2/BucketNotificationsHandler050a0587b7544547bf325f094a3db834/Role/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "BucketNotificationsHandler050a0587b7544547bf325f094a3db834RoleB6FB88EC"
+          }
+        ],
+        "/zbrbora-cdk-stack-task-2/BucketNotificationsHandler050a0587b7544547bf325f094a3db834/Role/DefaultPolicy/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "BucketNotificationsHandler050a0587b7544547bf325f094a3db834RoleDefaultPolicy2CF63D36"
+          }
+        ],
+        "/zbrbora-cdk-stack-task-2/BucketNotificationsHandler050a0587b7544547bf325f094a3db834/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "BucketNotificationsHandler050a0587b7544547bf325f094a3db8347ECC3691"
+          }
+        ],
+        "/zbrbora-cdk-stack-task-2/CDKMetadata/Default": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "CDKMetadata"
+          }
+        ],
+        "/zbrbora-cdk-stack-task-2/BootstrapVersion": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "BootstrapVersion"
+          }
+        ],
+        "/zbrbora-cdk-stack-task-2/CheckBootstrapVersion": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "CheckBootstrapVersion"
+          }
+        ]
+      },
+      "displayName": "zbrbora-cdk-stack-task-2"
+    }
+  }
+}

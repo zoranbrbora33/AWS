@@ -1,0 +1,20 @@
+{
+  "version": "17.0.0",
+  "files": {
+    "c474c4af756402b804b1f0cd09eb02537f7499f695f216e1b79b2f26ae20358b": {
+      "source": {
+        "path": "zbrbora-AcademyS3Stack.template.json",
+        "packaging": "file"
+      },
+      "destinations": {
+        "456582705970-eu-central-1": {
+          "bucketName": "cdk-hnb659fds-assets-456582705970-eu-central-1",
+          "objectKey": "c474c4af756402b804b1f0cd09eb02537f7499f695f216e1b79b2f26ae20358b.json",
+          "region": "eu-central-1",
+          "assumeRoleArn": "arn:${AWS::Partition}:iam::456582705970:role/cdk-hnb659fds-file-publishing-role-456582705970-eu-central-1"
+        }
+      }
+    }
+  },
+  "dockerImages": {}
+}

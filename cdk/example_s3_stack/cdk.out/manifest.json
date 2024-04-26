@@ -1,0 +1,94 @@
+{
+  "version": "17.0.0",
+  "artifacts": {
+    "Tree": {
+      "type": "cdk:tree",
+      "properties": {
+        "file": "tree.json"
+      }
+    },
+    "zbrbora-AcademyS3Stack.assets": {
+      "type": "cdk:asset-manifest",
+      "properties": {
+        "file": "zbrbora-AcademyS3Stack.assets.json",
+        "requiresBootstrapStackVersion": 6,
+        "bootstrapStackVersionSsmParameter": "/cdk-bootstrap/hnb659fds/version"
+      }
+    },
+    "zbrbora-AcademyS3Stack": {
+      "type": "aws:cloudformation:stack",
+      "environment": "aws://456582705970/eu-central-1",
+      "properties": {
+        "templateFile": "zbrbora-AcademyS3Stack.template.json",
+        "validateOnSynth": false,
+        "assumeRoleArn": "arn:${AWS::Partition}:iam::456582705970:role/cdk-hnb659fds-deploy-role-456582705970-eu-central-1",
+        "cloudFormationExecutionRoleArn": "arn:${AWS::Partition}:iam::456582705970:role/cdk-hnb659fds-cfn-exec-role-456582705970-eu-central-1",
+        "stackTemplateAssetObjectUrl": "s3://cdk-hnb659fds-assets-456582705970-eu-central-1/c474c4af756402b804b1f0cd09eb02537f7499f695f216e1b79b2f26ae20358b.json",
+        "requiresBootstrapStackVersion": 6,
+        "bootstrapStackVersionSsmParameter": "/cdk-bootstrap/hnb659fds/version",
+        "additionalDependencies": [
+          "zbrbora-AcademyS3Stack.assets"
+        ],
+        "lookupRole": {
+          "arn": "arn:${AWS::Partition}:iam::456582705970:role/cdk-hnb659fds-lookup-role-456582705970-eu-central-1",
+          "requiresBootstrapStackVersion": 8,
+          "bootstrapStackVersionSsmParameter": "/cdk-bootstrap/hnb659fds/version"
+        }
+      },
+      "dependencies": [
+        "zbrbora-AcademyS3Stack.assets"
+      ],
+      "metadata": {
+        "/zbrbora-AcademyS3Stack/zbrbora-academy-cdk-1/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "zbrboraacademycdk1C2C9B571"
+          }
+        ],
+        "/zbrbora-AcademyS3Stack/zbrbora-academy-cdk-2/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "zbrboraacademycdk221FE1745"
+          }
+        ],
+        "/zbrbora-AcademyS3Stack/zbrbora-academy-cdk-3/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "zbrboraacademycdk3124B0CBE"
+          }
+        ],
+        "/zbrbora-AcademyS3Stack/zbrbora-academy-cdk-4/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "zbrboraacademycdk4C4B40B56"
+          }
+        ],
+        "/zbrbora-AcademyS3Stack/zbrbora-academy-cdk-5/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "zbrboraacademycdk51A3CA114"
+          }
+        ],
+        "/zbrbora-AcademyS3Stack/CDKMetadata/Default": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "CDKMetadata"
+          }
+        ],
+        "/zbrbora-AcademyS3Stack/BootstrapVersion": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "BootstrapVersion"
+          }
+        ],
+        "/zbrbora-AcademyS3Stack/CheckBootstrapVersion": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "CheckBootstrapVersion"
+          }
+        ]
+      },
+      "displayName": "zbrbora-AcademyS3Stack"
+    }
+  }
+}

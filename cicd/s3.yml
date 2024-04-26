@@ -1,0 +1,20 @@
+AWSTemplateFormatVersion: "2010-09-09"
+
+Parameters:
+  DataS3BucketName:
+    Type: String
+  ScriptsS3BucketName:
+    Type: String
+
+Resources:
+  ZbrboraAcademyDataS3Bucket:
+    Type: 'AWS::S3::Bucket'
+    DeletionPolicy: Delete
+    Properties:
+      BucketName: !Ref DataS3BucketName
+
+  ZbrboraAcademyScriptsS3Bucket:
+    Type: 'AWS::S3::Bucket'
+    DeletionPolicy: Delete
+    Properties:
+      BucketName: !Ref ScriptsS3BucketName
